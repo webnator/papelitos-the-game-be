@@ -6,20 +6,77 @@ class SocketService {
       WebSocket
     } = deps;
     this.socket = WebSocket;
+    this.handlers = [];
+    this.clients = new Set();
   }
 
   startServer({port}) {
-    this.socketInstance = new this.socket.Server({ port: port });
+    this.socketInstance = new this.socket.Server({port: port});
     console.log('Started socket server on port', port);
-    this._setConnection();
+    this._handleClientConnections();
+    this._checkLivenessOfClients();
   }
 
-  _setConnection() {
-    this.socketInstance.on('connection', (ws) => {
-      ws.on('message', (message) => {
-        console.log('received: %s', message);
-      });
+  _handleClientConnections() {
+    this.socketInstance.on('connection', (client) => {
+      this._registerClient(client);
     });
+  }
+
+  _registerClient(client) {
+    client.isAlive = true;
+    client.on('pong', this._heartbeat);
+    client.on('message', (message) => {
+      this._handleMessage(client, message);
+    });
+    client.on('close', () => {
+      this.clients.delete(client);
+      console.log('Im out!');
+    });
+    console.log('New client!');
+    this.clients.add(client);
+  }
+
+  _heartbeat() {
+    console.log('Im alive :)');
+    this.isAlive = true;
+  }
+
+  _checkLivenessOfClients() {
+    setTimeout(() => {
+      this.socketInstance.clients.forEach((client) => {
+        if (client.isAlive === false) {
+          console.log('Im dead :(');
+          client.terminate();
+          this.clients.delete(client);
+        } else {
+          client.isAlive = false;
+          client.ping(() => {});
+        }
+      });
+      this._checkLivenessOfClients();
+    }, 2000);
+  }
+
+  _handleMessage(client, message) {
+    console.log('Event received: ', client, message);
+    message = JSON.parse(message);
+    const handler = this.handlers.find(hand => hand.event === message.event);
+    if (handler) {
+      return handler.handler(client, message.payload);
+    } else {
+      console.log('Unhandled event received: %s', message);
+    }
+  }
+
+  registerHandler({event, handler}) {
+    const handlerObject = {event, handler};
+    const handlerIndex = this.handlers.findIndex(hand => hand.event === event);
+    if (handlerIndex < 0) {
+      this.handlers.push(handlerObject);
+    } else {
+      this.handlers[handlerIndex].handler = handler;
+    }
   }
 
   broadcastMessage(event, payload) {

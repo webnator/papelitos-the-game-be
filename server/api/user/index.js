@@ -9,10 +9,4 @@ module.exports = (server, container) => {
     handler: userController.login
   });
 
-  server.route({
-    method: 'PUT',
-    path: '/user/{userId}/logout',
-    handler: userController.logout
-  });
-
 };

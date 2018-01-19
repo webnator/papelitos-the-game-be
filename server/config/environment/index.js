@@ -4,16 +4,13 @@
 // ============================================
 const all = {
   host: 'localhost',
-  appName: 'poc:voice-api',
+  appName: 'papelitos-api',
 
   env: process.env.NODE_ENV,
 
   routes: {
-    prefix: '/voice-api'
-  },
-
-  modules: ['logs', 'customers', 'budget']
-
+    prefix: '/papelitos'
+  }
 };
 
 // Export the config object based on the DSHB_NODE_ENV

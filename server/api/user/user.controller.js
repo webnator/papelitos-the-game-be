@@ -1,7 +1,5 @@
 'use strict';
 
-const userSchema = require('./schemas/user.schema');
-
 function makeUserController(deps) {
   const {
     errorService,
@@ -12,29 +10,10 @@ function makeUserController(deps) {
   } = deps;
 
   return {
-    async login(request, reply) {
-      try {
-        await schemaService.validateSchema(request.params, userSchema);
-        userService.login({ user: request.params.userId });
-        let response = responsesService.createResponseData(userResponses.login_ok);
-        return reply(response.body).code(response.statusCode);
-      } catch (error) {
-        let response = errorService.createGeneralError(error);
-        return reply(response.body).code(response.statusCode);
-      }
+    async login(client, message) {
+      console.log(message);
+      client.send(JSON.stringify({code: 123}));
     },
-
-    async logout(request, reply) {
-      try {
-        await schemaService.validateSchema(request.params, userSchema);
-        userService.logout({ user: request.params.userId });
-        let response = responsesService.createResponseData(userResponses.logout_ok);
-        return reply(response.body).code(response.statusCode);
-      } catch (error) {
-        let response = errorService.createGeneralError(error);
-        return reply(response.body).code(response.statusCode);
-      }
-    }
   };
 }
 

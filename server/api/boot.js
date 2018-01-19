@@ -9,6 +9,8 @@ const makeAppInit = require('./../init');
 // Libraries
 const WebSocket = require('ws');
 
+const socketHandlers = require('./../api/user/socketHandlers');
+
 // Services
 const ErrorService = require('./services/errors.service');
 const ResponsesService = require('./services/responses.service');
@@ -22,32 +24,13 @@ const makeUserService = require('./user/user.service');
 const makeUserResponses = require('./user/user.responses');
 const UserEntity = require('./user/user.entity');
 
-// module entity
-const makeModuleController = require('./module/module.controller');
-const makeModuleService = require('./module/module.service');
-const makeModuleResponses = require('./module/module.responses');
-
-// budget entity
-const makeBudgetController = require('./budget/budget.controller');
-const makeBudgetService = require('./budget/budget.service');
-const makeBudgetResponses = require('./budget/budget.responses');
-
-// customers entity
-const makeCustomersController = require('./customers/customers.controller');
-const makeCustomersService = require('./customers/customers.service');
-const makeCustomersResponses = require('./customers/customers.responses');
-
-// logs entity
-const makeLogsController = require('./logs/logs.controller');
-const makeLogsService = require('./logs/logs.service');
-const makeLogsResponses = require('./logs/logs.responses');
-
 container.register({
   // Libs
   WebSocket: asValue(WebSocket),
 
   // Initial
   appInit: asFunction(makeAppInit).singleton(),
+  socketHandlers: asFunction(socketHandlers).singleton(),
 
   // config
 
@@ -63,26 +46,6 @@ container.register({
   userService: asFunction(makeUserService).singleton(),
   userResponses: asFunction(makeUserResponses).singleton(),
   UserEntity: asFunction(instantiateEntityWithDependencies(UserEntity)).singleton(),
-
-  // module entity
-  moduleController: asFunction(makeModuleController).singleton(),
-  moduleService: asFunction(makeModuleService).singleton(),
-  moduleResponses: asFunction(makeModuleResponses).singleton(),
-
-  // budget entity
-  budgetController: asFunction(makeBudgetController).singleton(),
-  budgetService: asFunction(makeBudgetService).singleton(),
-  budgetResponses: asFunction(makeBudgetResponses).singleton(),
-
-  // customers entity
-  customersController: asFunction(makeCustomersController).singleton(),
-  customersService: asFunction(makeCustomersService).singleton(),
-  customersResponses: asFunction(makeCustomersResponses).singleton(),
-
-  // logs entity
-  logsController: asFunction(makeLogsController).singleton(),
-  logsService: asFunction(makeLogsService).singleton(),
-  logsResponses: asFunction(makeLogsResponses).singleton(),
 
 });
 
