@@ -31,14 +31,12 @@ class SocketService {
     });
     client.on('close', () => {
       this.clients.delete(client);
-      console.log('Im out!');
     });
     console.log('New client!');
     this.clients.add(client);
   }
 
   _heartbeat() {
-    console.log('Im alive :)');
     this.isAlive = true;
   }
 
@@ -46,7 +44,7 @@ class SocketService {
     setTimeout(() => {
       this.socketInstance.clients.forEach((client) => {
         if (client.isAlive === false) {
-          console.log('Im dead :(');
+          console.log(client, 'has disconnected');
           client.terminate();
           this.clients.delete(client);
         } else {
@@ -59,7 +57,6 @@ class SocketService {
   }
 
   _handleMessage(client, message) {
-    console.log('Event received: ', client, message);
     message = JSON.parse(message);
     const handler = this.handlers.find(hand => hand.event === message.event);
     if (handler) {
@@ -77,6 +74,13 @@ class SocketService {
     } else {
       this.handlers[handlerIndex].handler = handler;
     }
+  }
+
+  sendToClient(client, event, payload) {
+    if (!this.socketInstance.clients.has(client)) {
+      throw 'Client not connected';
+    }
+    client.send(JSON.stringify({event: event, payload: payload}));
   }
 
   broadcastMessage(event, payload) {

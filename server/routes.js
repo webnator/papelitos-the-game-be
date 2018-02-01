@@ -3,7 +3,7 @@
 const container = require('./api/boot');
 
 exports.register = function(server, options, next) {
-  require('./api/user')(server, container);
+  require('./api/game')(server, container);
   next();
 };
 

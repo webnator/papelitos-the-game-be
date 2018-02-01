@@ -9,7 +9,7 @@ const makeAppInit = require('./../init');
 // Libraries
 const WebSocket = require('ws');
 
-const socketHandlers = require('./../api/user/socketHandlers');
+const socketHandlers = require('./game/socketHandlers');
 
 // Services
 const ErrorService = require('./services/errors.service');
@@ -18,11 +18,11 @@ const SchemaService = require('./services/schema.service');
 const SocketService = require('./services/socket.service');
 const GlobalService = require('./services/global.service');
 
-// user entity
-const makeUserController = require('./user/user.controller');
-const makeUserService = require('./user/user.service');
-const makeUserResponses = require('./user/user.responses');
-const UserEntity = require('./user/user.entity');
+// game entity
+const makeGameController = require('./game/game.controller');
+const makeGameService = require('./game/game.service');
+const makeGameResponses = require('./game/game.responses');
+const GameEntity = require('./game/game.entity');
 
 container.register({
   // Libs
@@ -41,11 +41,11 @@ container.register({
   socketService: asClass(SocketService).singleton(),
   GlobalService: asFunction(() => GlobalService).singleton(),
 
-  // user entity
-  userController: asFunction(makeUserController).singleton(),
-  userService: asFunction(makeUserService).singleton(),
-  userResponses: asFunction(makeUserResponses).singleton(),
-  UserEntity: asFunction(instantiateEntityWithDependencies(UserEntity)).singleton(),
+  // game entity
+  gameController: asFunction(makeGameController).singleton(),
+  gameService: asFunction(makeGameService).singleton(),
+  gameResponses: asFunction(makeGameResponses).singleton(),
+  makeGameEntity: asFunction(instantiateEntityWithDependencies(GameEntity)).singleton(),
 
 });
 
