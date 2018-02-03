@@ -81,6 +81,15 @@ function makeUserService(deps) {
       game.setWordsForPlayer(player, words);
       broadcastToAllButClient({clients: game.clients, client, event: 'wordEntering_response', payload: {player, word: words}});
     },
+
+    proxyEvent({client, code, message, event}) {
+      const game = ongoingGames.find(game => game.gameId.toUpperCase() === code.toUpperCase());
+      if (!game) {
+        console.error('Sending event to non-existing game');
+        return;
+      }
+      broadcastToAllButClient({clients: game.clients, client, event: event + '_response', payload: message });
+    },
   };
 }
 

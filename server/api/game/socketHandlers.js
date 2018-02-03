@@ -19,5 +19,17 @@ module.exports = (deps) => {
   }, {
     event: 'wordEntering',
     handler: gameController.enterPlayerWords
+  }, {
+    event: 'startTurn',
+    handler: gameController.startTurn
+  }, {
+    event: 'finishTurn',
+    handler: gameController.finishTurn
+  }, {
+    event: 'wordGuessed',
+    handler: gameController.wordGuessed
+  }, {
+    event: 'beginPlayerTurns',
+    handler: gameController.beginPlayerTurns
   }];
 };

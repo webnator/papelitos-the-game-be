@@ -70,6 +70,50 @@ function makeGameController(deps) {
       gameService.setWords({ code: message.code, client, player: message.player, words: message.words})
     },
 
+    /**
+     * Starts the guessing turn for a player
+     * @param {WebSocket} client - The websocket client instance
+     * @param {Object} message - The message payload
+     * @returns {Promise<void>}
+     */
+    async startTurn(client, message) {
+      console.log('Starting turn in game', message.code);
+      gameService.proxyEvent({ code: message.code, client, message, event: 'startTurn'});
+    },
+
+    /**
+     * Finishes the guessing turn for a player
+     * @param {WebSocket} client - The websocket client instance
+     * @param {Object} message - The message payload
+     * @returns {Promise<void>}
+     */
+    async finishTurn(client, message) {
+      console.log('Finishing turn in game', message.code);
+      gameService.proxyEvent({ code: message.code, client, message, event: 'finishTurn'});
+    },
+
+    /**
+     * Sends a word has been guessed event
+     * @param {WebSocket} client - The websocket client instance
+     * @param {Object} message - The message payload
+     * @returns {Promise<void>}
+     */
+    async wordGuessed(client, message) {
+      console.log('Word guessed in game', message.code);
+      gameService.proxyEvent({ code: message.code, client, message, event: 'wordGuessed'});
+    },
+
+    /**
+     * Finish and begins the turn of a player in the app
+     * @param {WebSocket} client - The websocket client instance
+     * @param {Object} message - The message payload
+     * @returns {Promise<void>}
+     */
+    async beginPlayerTurns(client, message) {
+      console.log('Begin player turns in game', message.code);
+      gameService.proxyEvent({ code: message.code, client, message, event: 'beginPlayerTurns'});
+    },
+
     async testControls(request, reply) {
       console.log('Registering new game for client');
       socketService.broadcastMessage(request.payload.event, request.payload.payload);
